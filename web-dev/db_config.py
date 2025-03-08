@@ -1,9 +1,10 @@
-import mysql.connector
+import pymysql
 
 def get_db_connection():
-    return mysql.connector.connect(
+    return pymysql.connect(
         host="localhost",
         user="root",
         password="Rahul@103",
-        database="CloudShelf"
+        database="cloudshelf_db",
+        cursorclass=pymysql.cursors.DictCursor
     )

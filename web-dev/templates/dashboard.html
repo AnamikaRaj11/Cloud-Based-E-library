@@ -3,16 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - CloudShelf</title>
-    <link rel="stylesheet" href="C:\Users\anami\Desktop\web-dev\static\css\dashboard.css">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="dashboard-container">
-        <h2>Welcome, {{ full_name }}!</h2>
-        <p>Email: {{ email }}</p>
-        <p>Account Created On: {{ created_at }}</p>
-        
-        <a href="/logout" class="logout-btn">Logout</a>
+
+    <div class="navbar">
+        <input type="text" class="search-bar" placeholder="Search...">
+        <div class="profile-icon" onclick="toggleProfile()">
+            <img src="{{ url_for('static', filename='images/account-icon.png') }}" alt="Profile">
+        </div>
     </div>
+
+    <div class="profile-panel" id="profilePanel">
+        <p><strong>Name:</strong> {{ user['full_name'] }}</p>
+        <p><strong>Email:</strong> {{ user['email'] }}</p>
+        <p><strong>ID:</strong> {{ user['id'] }}</p>
+        <button onclick="toggleProfile()">Close</button>
+    </div>
+
+    <script>
+        function toggleProfile() {
+            let panel = document.getElementById("profilePanel");
+            panel.classList.toggle("active");
+        }
+    </script>
+
 </body>
 </html>
