@@ -2,6 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, session, f
 from db_config import get_db_connection
 import hashlib
 from pymysql.cursors import DictCursor  # Import DictCursor explicitly
+from search import search_bp
+from search_results import search_results_bp
+from edit_profile import edit_profile_bp 
+from book_routes import book_routes_bp 
 
 app = Flask(__name__, static_folder='static')
 app.secret_key = 'your_secret_key'  # Required for session management
@@ -109,6 +113,11 @@ def logout():
     session.clear()  # Clear all session data
     flash("You have been logged out.", "info")
     return redirect(url_for('login'))  # Redirect to login page
+
+app.register_blueprint(search_bp) 
+app.register_blueprint(search_results_bp)
+app.register_blueprint(edit_profile_bp)
+app.register_blueprint(book_routes_bp)
 
 if __name__ == '__main__':
     app.run(debug=True)

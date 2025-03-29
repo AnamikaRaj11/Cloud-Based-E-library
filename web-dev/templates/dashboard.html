@@ -3,32 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>CloudShelf Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script defer src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </head>
 <body>
 
-    <div class="navbar">
-        <input type="text" class="search-bar" placeholder="Search...">
-        <div class="profile-icon" onclick="toggleProfile()">
-            <img src="{{ url_for('static', filename='images/account-icon.png') }}" alt="Profile">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">CloudShelf</div>
+        <button class="nav-btn">Home</button>
+        <button class="nav-btn">Favorites</button>
+        <button class="nav-btn">Collections</button>
+        <button class="nav-btn">History</button>
+        <button class="nav-btn">Statistics</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- Top Bar with Search -->
+        <div class="top-bar">
+            <form action="{{ url_for('search.search_results') }}" method="GET" class="search-container">
+                <input type="text" name="q" id="dashboard-search-input" class="search-bar" 
+                    placeholder="Search books..." autocomplete="off" oninput="showSuggestions('dashboard-search-input', 'dashboard-suggestions-box')">
+                <button type="submit" class="search-btn">🔍</button>
+                <div id="dashboard-suggestions-box" class="search-suggestions"></div> 
+            </form>
+
+            <!-- Profile Icon -->
+            <div class="profile-icon" onclick="toggleProfile()">
+                <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Profile">
+            </div>
         </div>
-    </div>
 
-    <div class="profile-panel" id="profilePanel">
-        <p><strong>Name:</strong> {{ user['full_name'] }}</p>
-        <p><strong>Email:</strong> {{ user['email'] }}</p>
-        <p><strong>ID:</strong> {{ user['id'] }}</p>
-        <button onclick="toggleProfile()">Close</button>
-    </div>
+        <!-- Profile Dropdown -->
+        <div class="profile-panel" id="profilePanel">
+            <div class="profile-header">
+                <img src="{{ url_for('static', filename='images/default-profile.png') }}" alt="Profile Picture" class="profile-picture">
+                <h2>{{ user['full_name'] }}</h2>
+                <p class="user-email">{{ user['email'] }}</p>
+                <p class="user-id">User ID: {{ user['id'] }}</p>
+            </div>
 
-    <script>
-        function toggleProfile() {
-            let panel = document.getElementById("profilePanel");
-            panel.classList.toggle("active");
-        }
-    </script>
+            <div class="profile-info">
+                <p><strong>Completed Books:</strong> {{ user['books_read'] }}</p>
+                <p><strong>Favorite Genre:</strong> {{ user['favorite_genre'] or 'Not Set' }}</p>
+            </div>
+
+            <div class="profile-actions">
+                <a href="{{ url_for('edit_profile.edit_profile') }}" class="profile-btn">Edit Profile</a>
+                <button class="profile-btn" id="settings-btn">Settings</button>
+                <a href="{{ url_for('logout') }}" class="profile-btn logout-btn">Logout</a>
+            </div>
+        </div>
+
+    </div>
 
 </body>
 </html>
