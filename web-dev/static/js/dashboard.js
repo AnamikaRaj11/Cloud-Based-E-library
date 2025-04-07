@@ -134,3 +134,68 @@ document.getElementById('settings-btn')?.addEventListener('click', function() {
   console.log('Settings clicked');
   // Implement settings functionality here
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Existing code...
+  
+    let searchInput = document.getElementById("dashboard-search-input");
+    if (searchInput) {
+      searchInput.addEventListener("input", function () {
+        showSuggestions("dashboard-search-input", "suggestions-box");
+      });
+  
+      searchInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          searchBook("dashboard-search-input");
+        }
+      });
+    }
+  });
+  
+
+  function showSuggestions(inputId, suggestionsBoxId) {
+    let input = document.getElementById(inputId).value;
+    let suggestionsBox = document.getElementById(suggestionsBoxId);
+  
+    if (input.length < 2) {
+      suggestionsBox.innerHTML = "";
+      suggestionsBox.classList.remove("active");
+      return;
+    }
+  
+    fetch(`/search_suggestions?q=${input}`)
+      .then(response => response.json())
+      .then(data => {
+        suggestionsBox.innerHTML = "";
+        if (data.length === 0) {
+          suggestionsBox.classList.remove("active");
+          return;
+        }
+  
+        data.forEach(book => {
+          let suggestion = document.createElement("div");
+          suggestion.classList.add("suggestion-item");
+          suggestion.textContent = book.title;
+          suggestion.onclick = function () {
+            document.getElementById(inputId).value = book.title;
+            suggestionsBox.innerHTML = "";
+            suggestionsBox.classList.remove("active");
+          };
+          suggestionsBox.appendChild(suggestion);
+        });
+  
+        suggestionsBox.classList.add("active");
+      });
+  
+    document.addEventListener("click", function (event) {
+      if (
+        !document.getElementById(inputId).contains(event.target) &&
+        !suggestionsBox.contains(event.target)
+      ) {
+        suggestionsBox.innerHTML = "";
+        suggestionsBox.classList.remove("active");
+      }
+    });
+  }
+  
