@@ -4,24 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ book.title }}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/book_details.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/book_detail.css') }}">
 </head>
 <body>
-    <header>
-        <h1>{{ book.title }}</h1>
-    </header>
-
-    <div class="book-details">
+    <div class="book-detail-container">
         <img src="{{ book.img_url }}" alt="{{ book.title }}">
-        <div class="book-info">
+        
+        <div class="book-detail-info">
+            <h1>{{ book.title }}</h1>
             <p><strong>Author:</strong> {{ book.author }}</p>
-            <p><strong>Published:</strong> {{ book.year }}</p>
-            <p><strong>Category:</strong> {{ book.categories }}</p>
+            <p><strong>Published Year:</strong> {{ book.year }}</p>
             <p><strong>Status:</strong> {{ book.status }}</p>
-            <p><strong>Description:</strong> {{ book.description }}</p>
+
+            {% if book.categories %}
+                <p><strong>Categories:</strong> {{ book.categories }}</p>
+            {% endif %}
+            
+            {% if book.description %}
+                <p><strong>Summary:</strong></p>
+                <p>{{ book.description }}</p>
+            {% endif %}
+
+            <!-- ✅ Read Book Button (dynamic based on login status) -->
+            {% if session.get('user_id') %}
+                <a href="{{ url_for('book_details_bp.read_book', book_id=book.id) }}" class="read-button">📖 Read Book</a>
+            {% else %}
+                <a href="#" onclick="showLoginPrompt()" class="read-button">📖 Read Book</a>
+            {% endif %}
         </div>
     </div>
 
-    <a href="{{ url_for('home') }}" class="back-button">Back to Home</a>
+    <a href="{{ url_for('home') }}" class="back-button">⬅ Back to Home</a>
+
+    <script>
+        function showLoginPrompt() {
+            alert("Please log in to read this book.");
+            window.location.href = "{{ url_for('login') }}";
+        }
+    </script>
 </body>
 </html>

@@ -36,10 +36,11 @@ def search_results():
         return render_template("search_results.html", books=[], query=query)
 
     with conn.cursor(DictCursor) as cursor:
-        cursor.execute("SELECT title, author, year, img_url FROM book WHERE LOWER(title) LIKE %s", (f"%{query}%",))
+        # ✅ Select the `id` field too
+        cursor.execute("SELECT id, title, author, year, img_url FROM book WHERE LOWER(title) LIKE %s", (f"%{query}%",))
         books = cursor.fetchall()
 
-    conn.close()  # ✅ Close the connection properly
+    conn.close()
 
-    print(books)
-    return render_template("search_results.html", books=books, query=query)  # ✅ Use `books`, not `results`
+    print(books)  # Optional: helpful for debugging
+    return render_template("search_results.html", books=books, query=query)
